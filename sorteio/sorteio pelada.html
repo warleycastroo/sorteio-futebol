@@ -118,7 +118,6 @@
     </div>
     <img class="soccer-ball" src="imagens/bola-removebg-preview.png" alt="Bola de Futebol">
     <img class="soccer-ball" src="imagens/bola-removebg-preview.png" alt="Bola de Futebol">
-    <img class="soccer-ball" src="imagens/bola-removebg-preview.png" alt="Bola de Futebol">
     <script>
         var jogadores = [];
         function adicionarJogador() {
@@ -144,14 +143,23 @@
             }
         }
         function sortearTimes() {
-            jogadores.sort(function() { return 0.5 - Math.random() });
-            var jogadoresPerTime = parseInt(document.getElementById("jogadoresPerTime").value);
-            var numTimes = Math.ceil(jogadores.length / jogadoresPerTime);
-            var times = [];
-            for (var i = 0; i < numTimes; i++) {
-                var time = jogadores.slice(i * jogadoresPerTime, (i + 1) * jogadoresPerTime);
-                times.push(time);
+            var jogadoresPorTime = parseInt(document.getElementById("jogadoresPorTime").value);
+            var numTimes = Math.ceil(jogadores.length / jogadoresPorTime);
+            
+            // Ordenar os jogadores com base no nível de habilidade
+            jogadores.sort(function(a, b) {
+                return a.nivel - b.nivel;
+            });
+
+            var times = [[], []]; // Dois times vazios
+            var currentTeam = 0; // Começar com o time 0
+
+            // Distribuir os jogadores de forma alternada
+            for (var i = 0; i < jogadores.length; i++) {
+                times[currentTeam].push(jogadores[i]);
+                currentTeam = 1 - currentTeam; // Alternar para o outro time
             }
+            
             exibirTimes(times);
         }
         function exibirTimes(times) {
@@ -166,7 +174,7 @@
                 timeDiv.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.2)";
                 timeDiv.style.color = "#fff"; /* Texto branco */
                 for (var j = 0; j < times[i].length; j++) {
-                    timeDiv.innerHTML += times[i][j].nome + " (Nivel " + times[i][j].nivel + "/5)<br>";
+                    timeDiv.innerHTML += times[i][j].nome + " (Nível " + times[i][j].nivel + "/5)<br>";
                 }
                 timesDiv.appendChild(timeDiv);
             }
